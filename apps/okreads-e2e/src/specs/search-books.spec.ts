@@ -22,7 +22,9 @@ describe('When: Use the search feature', () => {
     await browser.wait(
       ExpectedConditions.textToBePresentInElement($('tmo-root'), 'okreads')
     );
-
-    // TODO: Implement this test!
+    const input = await $('input[type="search"]');
+    await input.sendKeys('test');
+    const items = await $$('[data-testing="book-item"]');
+    expect(items.length).to.be.greaterThan(1, 'At least one book');
   });
 });
