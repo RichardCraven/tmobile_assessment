@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   addToReadingList,
@@ -17,11 +17,10 @@ import { Book } from '@tmo/shared/models';
 })
 export class BookSearchComponent implements OnInit {
   books: ReadingListBook[];
-
+  onCooldown = false;
   searchForm = this.fb.group({
     term: ''
   });
-
   constructor(
     private readonly store: Store,
     private readonly fb: FormBuilder
@@ -32,9 +31,26 @@ export class BookSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.searchForm.valueChanges.subscribe((v)=>{
+      if(this.isOnCooldown() === false){
+        this.searchBooks()
+      }
+    })
     this.store.select(getAllBooks).subscribe(books => {
       this.books = books;
     });
+  }
+
+  isOnCooldown(){
+    if(!this.onCooldown){
+      setTimeout(()=>{
+        this.onCooldown = false;
+      }, 500)
+      this.onCooldown = true;
+      return false
+    } else {
+      return true
+    }
   }
 
   formatDate(date: void | string) {
