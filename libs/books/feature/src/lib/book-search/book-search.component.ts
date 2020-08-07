@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {
   addToReadingList,
+  removeFromReadingList,
   clearSearch,
   getAllBooks,
   ReadingListBook,
   searchBooks
 } from '@tmo/books/data-access';
 import { FormBuilder } from '@angular/forms';
-import { Book } from '@tmo/shared/models';
+import { Book, ReadingListItem } from '@tmo/shared/models';
 
 @Component({
   selector: 'tmo-book-search',
@@ -17,14 +19,15 @@ import { Book } from '@tmo/shared/models';
 })
 export class BookSearchComponent implements OnInit {
   books: ReadingListBook[];
-
+  toRemove: ReadingListItem;
   searchForm = this.fb.group({
     term: ''
   });
 
   constructor(
     private readonly store: Store,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private snackBar: MatSnackBar
   ) {}
 
   get searchTerm(): string {
@@ -44,6 +47,7 @@ export class BookSearchComponent implements OnInit {
   }
 
   addBookToReadingList(book: Book) {
+    this.openSnackBar_undoAdd('Undo Add? ', 'Undo', book)
     this.store.dispatch(addToReadingList({ book }));
   }
 
@@ -58,5 +62,23 @@ export class BookSearchComponent implements OnInit {
     } else {
       this.store.dispatch(clearSearch());
     }
+  }
+
+  openSnackBar_undoAdd(message: string, action: string, book: Book) {
+    const snackBarRef = this.snackBar.open(message, action, {
+      duration: 2000,
+    });
+
+    snackBarRef.onAction().subscribe(() => {
+      this.store.source.subscribe((e)=>{
+        this.toRemove = e.readingList.entities[book.id];
+      })
+      setTimeout(()=>{
+        this.removeFromReadingList()
+      },0)
+    });
+  }
+  removeFromReadingList(){
+    this.store.dispatch(removeFromReadingList({item: this.toRemove}))
   }
 }

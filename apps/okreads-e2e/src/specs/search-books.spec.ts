@@ -1,4 +1,4 @@
-import { $, $$, browser, ExpectedConditions } from 'protractor';
+import { $, $$, browser, ExpectedConditions, element, by } from 'protractor';
 import { expect } from 'chai';
 
 describe('When: Use the search feature', () => {
@@ -24,5 +24,26 @@ describe('When: Use the search feature', () => {
     );
 
     // TODO: Implement this test!
+  });
+
+  it('Be able to undo an added book', async () => {
+    await browser.get('/');
+    await browser.wait(
+      ExpectedConditions.textToBePresentInElement($('tmo-root'), 'okreads')
+    );
+    const form = await $('form');
+    const input = await $('input[type="search"]');
+    await input.sendKeys('cant');
+    await form.submit();
+      console.log('about to search for btn')
+    const btn = await element.all(by.className('want-to-read-btn')).last()
+    await btn.click()
+
+    const submit = await element(by.name('Undo'));
+    // const snackbarBtn = await $('div.mat-simple-snackbar button');
+    browser.wait(ExpectedConditions.visibilityOf(submit), 1000);
+    await submit.click()
+    
+    // was not able to target the dynamically created mat-snackbar button :(
   });
 });
