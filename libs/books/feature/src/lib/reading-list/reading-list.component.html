@@ -1,4 +1,4 @@
-<ng-container *ngIf="(readingList$ | async).length > 0; else empty">
+<ng-container class="reading-list-container" *ngIf="(readingList$ | async).length > 0; else empty">
   <div class="reading-list-item" *ngFor="let b of readingList$ | async; let i = index">
     <div>
       <img class="reading-list-item--cover" [src]="b.coverUrl" />
