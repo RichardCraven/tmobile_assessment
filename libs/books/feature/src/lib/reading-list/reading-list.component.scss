@@ -31,6 +31,7 @@
   flex: 1;
   min-width: 0;
   margin-right: $spacing-xxs;
+  position: relative;
 }
 
 .reading-list-item--details--title,
@@ -44,4 +45,32 @@
   font-weight: 100;
   font-size: 1rem;
   color: $gray60;
+}
+.finish-book-button{
+  height: 25px;
+  width: 25px;
+  background-image: url('../../../../../../apps/okreads/browser/src/assets/unfinished.png');
+  background-size: 100% 100%;
+  background-position: center;
+  border: none;
+  background-color: inherit;
+  position: relative;
+  margin-top: 5px;
+  outline: none;
+  cursor: pointer;
+  &.finished{
+    cursor: inherit;
+    background-image: url('../../../../../../apps/okreads/browser/src/assets/check_finishedgreen.png');
+  }
+}
+.finished-span{
+  transition: all 0.2s;
+  opacity: 0;
+  top: -12px;
+  position: absolute;
+  font-size: 0.6em;
+  left: -7px;
+  &.show{
+    opacity: 1;
+  }
 }

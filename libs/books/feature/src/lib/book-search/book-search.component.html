@@ -30,7 +30,7 @@
             <strong>Published:</strong> {{ formatDate(b.publishedDate) }}
           </div>
           <p [innerHTML]="b.description"></p>
-          <div>
+          <div *ngIf="!b.finished">
             <button
               mat-flat-button
               color="primary"
@@ -38,6 +38,16 @@
               [disabled]="b.isAdded"
             >
               Want to Read
+            </button>
+          </div>
+          <div *ngIf="b.finished">
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="addBookToReadingList(b)"
+              [disabled]="b.isAdded"
+            >
+              Finished
             </button>
           </div>
         </div>
