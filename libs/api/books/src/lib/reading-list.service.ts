@@ -25,7 +25,23 @@ export class ReadingListService {
 
   async removeBook(id: string): Promise<void> {
     this.storage.update(list => {
+      list.forEach((e)=>{
+        if(e.bookId === id && e.finished) e.finished = false;
+      })
       return list.filter(x => x.bookId !== id);
+    });
+  }
+
+  async updateBook(id: string): Promise<void> {
+    this.storage.update(list => {
+      list.forEach((e)=>{
+        if(e.bookId === id) {
+          const date = new Date()
+          e.finished = true;
+          e.finishedDate = date.toISOString();
+        }
+      })
+      return list;
     });
   }
 }
